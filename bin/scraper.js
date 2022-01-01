@@ -1,12 +1,18 @@
-import cheerio from "cheerio";
-import got from "got";
+import puppeteer from 'puppeteer'
 
 export const getPDF = async (title) => {
-    // parse the novel index and find number of chapters
-    const baseURL = `https://boxnovel.com/${title}/`
-    const novelIndex = await got(baseURL)
+    // launch headless chrome and go to novel index
+    const baseURL = `https://boxnovel.com/novel/${title}/`
+    const browser = await puppeteer.launch()
+    const page = await browser.newPage()
+    await page.goto(baseURL)
 
-    let $ = cheerio.load(novelIndex.body)
-    const latestChapter = $('.wp-manga-chapter').first().text()
-    console.log(`Here's the latest chapter: ${latestChapter}`);
+    // find latest chapter
+    const latestChapter = await page.$eval('.wp-manga-chapter > a', el => el.innerText)
+    console.log(`The latest chapter is: ${latestChapter}`)
+
+    // go through chapters and retrieve text
+
+    await browser.close()
+
 }
