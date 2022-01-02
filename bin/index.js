@@ -9,9 +9,9 @@ const app = new Command();
 app.description('A tool for retrieving pdf/epub novels from boxnovel.com')
 
 // define pdf command
-app.command('pdf <title>').action(async (title) => {
-    await getPDF(title)
-})
+app.command('pdf <title>').action(async (title, options) => {
+    await getPDF(title, options)
+}).option('-c, --chapters <chapters>', 'specify chapter(s) to retrieve, for example 500 or 50-100')
 
 // run the app
 app.parse()
